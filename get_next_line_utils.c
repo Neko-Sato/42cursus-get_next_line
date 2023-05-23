@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 19:34:06 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/05/22 21:03:41 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/05/23 12:51:24 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ char	*ft_strchr(const char *s, int c)
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char *result;
-	char *_result;
+	char	*result;
+	char	*_result;
 
 	result = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
 	_result = result;

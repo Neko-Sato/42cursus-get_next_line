@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 19:34:00 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/05/23 00:36:11 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/05/23 13:24:29 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,51 +15,68 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-char	*get_next_line(int fd)
+static char	*read_enter(char **temp, char *buf, int fd, int *end)
 {
-	char		buf[BUFFER_SIZE];
-	static char	*temp;
-	char		*_temp;
-	char		*enter;
-	char		*result;
-	ssize_t		size;
+	char	*enter;
+	ssize_t	size;
 
-	//	tempを空文字に初期化
-	if (!temp)
-		temp = ft_strdup("");
-	//	改行をなしに初期化
-	enter = NULL;
-	while (!enter)
+	*end = 0;
+	buf[0] = '\0';
+	enter = ft_strchr(*temp, '\n');
+	if (!enter)
 	{
-		//	bufを空の文字列に初期化
-		buf[0] = '\0';
-		//	tempから改行を検索
-		enter = ft_strchr(temp, '\n');
-		//	tempに改行がなければ
-		if (!enter)
+		size = read(fd, buf, BUFFER_SIZE);
+		if (*buf)
+			enter = ft_strchr(buf, '\n');
+		else
 		{
-			size = read(fd, buf, BUFFER_SIZE);
-			//	bufに読み取りそこから改行を探す
-			if(size == 0 && *temp)
-				enter = buf + size;
-			else if (size <= 0)
-				return (NULL);
-			else
-				enter = ft_strchr(buf, '\n');
+			*end = 1;
+			if (*temp)
+				enter = ft_strchr(buf, '\0');
 		}
-		//	改行があればそれを終端文字に変える
+	}
+	return (enter);
+}
+
+static char	*_get_next_line(char **temp, int fd)
+{
+	char	buf[BUFFER_SIZE];
+
+	char *enter;  //	改行の位置
+	char *result; //	結果
+	char *_temp;  //	tempを解放する時に使う
+	int end;      //	これ以上の入力がないことを示す
+
+	while (1)
+	{
+		enter = read_enter(temp, buf, fd, &end);
 		if (enter)
 			*enter = '\0';
-		//	tempとbufをつなげた文字を作る
-		result = ft_strjoin(temp, buf);
-		//	改行があればtempを改行から一つ先の文字列にする
-		_temp = temp;
+		_temp = *temp;
+		result = ft_strjoin(*temp, buf);
 		if (enter)
-			temp = ft_strdup(enter + 1);
-		else
-			temp = result;
+			*temp = ft_strdup(enter + !end);
 		free(_temp);
-		//	改行があれば抜ける
+		if (end && !*result)
+			return (NULL);
+		if (enter)
+			return (result);
+		*temp = result;
+	}
+}
+
+char	*get_next_line(int fd)
+{
+	char		*result;
+	static char	*temp;
+
+	if (!temp)
+		temp = ft_strdup("");
+	result = _get_next_line(&temp, fd);
+	if (!result)
+	{
+		free(temp);
+		temp = NULL;
 	}
 	return (result);
 }
