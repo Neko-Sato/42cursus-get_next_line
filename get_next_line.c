@@ -6,77 +6,72 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 19:34:00 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/05/23 13:24:29 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/05/24 15:02:37 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stddef.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-static char	*read_enter(char **temp, char *buf, int fd, int *end)
-{
-	char	*enter;
-	ssize_t	size;
-
-	*end = 0;
-	buf[0] = '\0';
-	enter = ft_strchr(*temp, '\n');
-	if (!enter)
-	{
-		size = read(fd, buf, BUFFER_SIZE);
-		if (*buf)
-			enter = ft_strchr(buf, '\n');
-		else
-		{
-			*end = 1;
-			if (*temp)
-				enter = ft_strchr(buf, '\0');
-		}
-	}
-	return (enter);
-}
-
-static char	*_get_next_line(char **temp, int fd)
+static int	_get_next_line(char **result, char **temp, int fd)
 {
 	char	buf[BUFFER_SIZE];
+	char	*enter;
+	int		size;
 
-	char *enter;  //	改行の位置
-	char *result; //	結果
-	char *_temp;  //	tempを解放する時に使う
-	int end;      //	これ以上の入力がないことを示す
-
-	while (1)
+	buf[0] = '\0';
+	enter = NULL;
+	if (*temp)
+		enter = ft_strchr(*temp, '\n');
+	*result = *temp;
+	//ここから
+	while (!enter)
 	{
-		enter = read_enter(temp, buf, fd, &end);
+		*temp = *result;
+		size = read(fd, buf, BUFFER_SIZE - 1);
+		buf[size] = '\0';
+		if (!size)
+			return (-1);
+		enter = ft_strchr(buf, '\n');
 		if (enter)
 			*enter = '\0';
-		_temp = *temp;
-		result = ft_strjoin(*temp, buf);
-		if (enter)
-			*temp = ft_strdup(enter + !end);
-		free(_temp);
-		if (end && !*result)
-			return (NULL);
-		if (enter)
-			return (result);
-		*temp = result;
+		if (!*temp)
+			*temp = ft_strdup("");
+		if (!*temp)
+			return (1);
+		*result = ft_strjoin(*temp, buf);
+		if (!*result)
+			return (1);
+		free(*temp);
 	}
+	//ここまで別関数化
+	*enter = '\0';
+	*temp = ft_strdup(enter + 1);
+	if (!*temp)
+		return (1);
+	return (0);
 }
 
 char	*get_next_line(int fd)
 {
-	char		*result;
 	static char	*temp;
+	char		*result;
+	int			code;
 
-	if (!temp)
-		temp = ft_strdup("");
-	result = _get_next_line(&temp, fd);
-	if (!result)
-	{
-		free(temp);
+	result = NULL;
+	code = _get_next_line(&result, &temp, fd);
+	if (code == -1)
 		temp = NULL;
+	else if (code == 1)
+	{
+		if (temp && temp != result)
+			free(temp);
+		if (result)
+			free(result);
+		result = NULL;
 	}
 	return (result);
 }
