@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 19:34:00 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/05/26 14:48:17 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/05/26 18:17:01 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	_get_next_line(char **result, char **temp, int fd)
 	char	*_temp;
 	int		size;
 
-	size = -1;
+	size = 0;
 	enter = ft_strchr(*temp, '\n');
 	*result = *temp;
 	while (1)
@@ -34,9 +34,9 @@ static int	_get_next_line(char **result, char **temp, int fd)
 			size = read(fd, buf, BUFFER_SIZE);
 			if (size <= 0)
 				return (-(size == 0));
+			enter = ft_strchr(buf, '\n');		
 		}
-		buf[size + 1] = '\0';
-		enter = ft_strchr(buf, '\n');
+		buf[size] = '\0';
 		if (enter)
 		{
 			_temp = ft_strdup(enter + 1);
@@ -74,10 +74,9 @@ char	*get_next_line(int fd)
 	}
 	else if (code)
 	{
-		if (temp && temp != result)
+		if (temp != result)
 			free(temp);
-		if (result)
-			free(result);
+		free(result);
 		temp = NULL;
 		result = NULL;
 	}
