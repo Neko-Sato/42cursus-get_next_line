@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 19:34:00 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/05/26 18:17:01 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/05/29 15:27:42 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static int	_get_next_line(char **result, char **temp, int fd)
 			size = read(fd, buf, BUFFER_SIZE);
 			if (size <= 0)
 				return (-(size == 0));
-			enter = ft_strchr(buf, '\n');		
+			enter = ft_strchr(buf, '\n');
 		}
 		buf[size] = '\0';
 		if (enter)
