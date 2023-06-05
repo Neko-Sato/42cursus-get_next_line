@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 19:34:00 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/05/26 18:17:01 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/06/05 14:56:08 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,39 +16,49 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+static int	read_enter(char *temp, char *enter, char *buf, int fd)
+{
+	int	size;
+
+	size = 0;
+	if (!enter)
+	{
+		size = read(fd, buf, BUFFER_SIZE);
+		if (size <= 0)
+			return (-(size == 0));
+		enter = ft_strchr(buf, '\n');
+	}
+	buf[size] = '\0';
+	if (enter)
+	{
+		temp = ft_strdup(enter + 1);
+		if (!temp)
+			return (1);
+		*(enter + 1) = '\0';
+	}
+	return (0);
+}
+
 static int	_get_next_line(char **result, char **temp, int fd)
 {
 	char	buf[BUFFER_SIZE + 1];
 	char	*enter;
 	char	*_temp;
-	int		size;
+	int		code;
 
-	size = 0;
+	_temp = NULL;
 	enter = ft_strchr(*temp, '\n');
 	*result = *temp;
 	while (1)
 	{
 		*temp = *result;
-		if (!enter)
-		{
-			size = read(fd, buf, BUFFER_SIZE);
-			if (size <= 0)
-				return (-(size == 0));
-			enter = ft_strchr(buf, '\n');		
-		}
-		buf[size] = '\0';
-		if (enter)
-		{
-			_temp = ft_strdup(enter + 1);
-			if (!_temp)
-				return (2);
-			*(enter + 1) = '\0';
-		}
+		code = read_enter(_temp, enter, buf, fd);
+		if (code)
+			return (code);
 		*result = ft_strjoin(*temp, buf);
 		if (!*result)
-			return (3);
-		if (*temp)
-			free(*temp);
+			return (1);
+		free(*temp);
 		*temp = _temp;
 		if (enter)
 			return (0);
