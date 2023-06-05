@@ -6,13 +6,11 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 19:34:00 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/06/05 15:43:47 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/06/05 15:57:32 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stddef.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -24,8 +22,10 @@ static int	read_enter(char **enter, char **temp, char *buf, int fd)
 	if (!*enter)
 	{
 		size = read(fd, buf, BUFFER_SIZE);
-		if (size <= 0)
-			return (-(size == 0));
+		if (size == 0)
+			return (-1);
+		if (size == -1)
+			return (1);
 		*enter = ft_strchr(buf, '\n');
 	}
 	buf[size] = '\0';
