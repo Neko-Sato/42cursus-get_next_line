@@ -6,7 +6,11 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 19:34:00 by hshimizu          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2023/06/05 22:50:57 by hshimizu         ###   ########.fr       */
+=======
+/*   Updated: 2023/06/05 19:05:07 by hshimizu         ###   ########.fr       */
+>>>>>>> ee2e64ceb93e83745648f558a4ffaad213b69219
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +76,8 @@ char	*get_next_line(int fd)
 	char		*result;
 	int			code;
 
+	if (fd < 0)
+		return (NULL);
 	result = NULL;
 	code = _get_next_line(&result, &temp[fd], fd);
 	if (code == -1)
