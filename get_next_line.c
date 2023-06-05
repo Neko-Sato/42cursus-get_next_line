@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 19:34:00 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/06/05 15:57:32 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/06/05 22:50:37 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,7 @@ static int	_get_next_line(char **result, char **temp, int fd)
 		*result = ft_strjoin(*temp, buf);
 		if (!*result)
 			return (1);
-		if (*temp)
-			free(*temp);
+		free(*temp);
 		*temp = _temp;
 		if (enter)
 			return (0);
