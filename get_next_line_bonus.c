@@ -6,13 +6,13 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 19:34:00 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/06/05 16:13:07 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/06/05 19:46:00 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
-#include <stdlib.h>
 #include <limits.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 static int	read_enter(char **enter, char **temp, char *buf, int fd)
