@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 19:34:00 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/06/05 22:50:37 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/06/14 20:49:21 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,22 +73,16 @@ char	*get_next_line(int fd)
 
 	result = NULL;
 	code = _get_next_line(&result, &temp, fd);
-	if (code == -1)
+	if (code)
 	{
-		if (result && !*result)
+		if (0 < code && temp != result)
+			free(temp);
+		if (0 < code || (code < 0 && result && !*result))
 		{
 			free(result);
 			result = NULL;
 		}
 		temp = NULL;
-	}
-	else if (code)
-	{
-		if (temp != result)
-			free(temp);
-		free(result);
-		temp = NULL;
-		result = NULL;
 	}
 	return (result);
 }
